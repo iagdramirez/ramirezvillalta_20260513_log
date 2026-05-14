@@ -129,8 +129,27 @@ Function ip_in_ranges($ip, $ranges_array) {
 * 13 de mayo del 2026
 * Version: 1.1
 */
-Function crear_editar_log($archivo, $log, $id, $ip, $refer, $user_agent) {
-  print($log);
+Function crear_editar_log($ruta_archivo, $contenido, $tipo, $ip, $referer, $useragent) {
+  // SE DEFINE EL CATÁLOGO DE TIPOS DE LOGS QUE QUEREMOS REGISTRAR
+  $arr_tipo_log = array("[info]", "[notice]:", "[warning]:", "[error]:");
+
+  //SE OBTIENE LA FECHA Y LA HORA ACTUAL
+  $now = DateTime::createFromFormat('U.u', microtime(true));
+
+  // SE APLICA LA ZONA HORARIA QUE NECESITAMOS
+  $now->setTimeZone(new DateTimeZone('America/El_Salvador'));
+
+  // SE VERIFICA SI EXISTE EL ARCHIVO DE LOG
+  if(!file_exists($ruta_archivo)) mkdir("logs", 777, "w+");
+  
+  // SE ABRE EL APUNTADOR
+  $archivo = fopen($ruta_archivo, "a");
+
+  // SE HACE ESCRITURA EN LA ÚLTIMA LÍNEA
+  fwrite($archivo, PHP_EOL.$now->format("d-m-Y H:i:s.u T")." $ip $arr_tipo_log[$tipo] referer: $referer $contenido $useragent");
+
+  // SE CIERRA LA ESCRITURA DEL ARCHIVO
+  fclose($archivo);
 }
 
 
